@@ -1,4 +1,4 @@
-# intelli_ca
+# Intelli_chat
 
 A new Flutter project.
 
