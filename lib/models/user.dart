@@ -1,4 +1,4 @@
-class User {
+/*class User {
   User({
     required this.id,
     required this.name,
@@ -13,3 +13,4 @@ class User {
   final String name;
   final String email;
 }
+*/

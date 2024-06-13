@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intelli_ca/Addons/intelliChatUser.dart';
+import 'package:intelli_ca/pages/createUser.dart';
 import 'addusers.dart';
 import 'profilepage.dart';
-import 'chatscreen.dart'; // Import the ChatScreen
+import 'chatscreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,14 +16,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0; // Set the initial value to 0 for the chat page
-  final List<String> _chatList = [
-    'Chat 1',
-    'Chat 2',
-    'Chat 3',
-    'Chat 4',
-    // temporary chat names
-  ];
+  Future<IntelliChatUser?> _getUserProfile() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.email)
+          .get();
+
+      if (userDoc.exists) {
+        return IntelliChatUser(
+          name: userDoc['name'],
+          email: userDoc['email'],
+          about: userDoc['about'],
+        );
+      }
+    }
+    return null;
+  }
+
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: _buildBody(), // Update body to render different screens
+        body: _buildBody(),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -83,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedItemColor: Colors.amber[800],
           onTap: (index) {
             setState(() {
-              _selectedIndex = index; // Update selected index on tap
+              _selectedIndex = index;
             });
           },
         ),
@@ -94,39 +110,84 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return ListView.builder(
-          itemCount: _chatList.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(_chatList[index]),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
-                );
-              },
-            );
+        return _buildAddedUsersList();
+      case 1:
+        return FutureBuilder<IntelliChatUser?>(
+          future: _getUserProfile(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData && snapshot.data != null) {
+              return ProfileScreen(snapshot.data!);
+            } else {
+              return Createprofile();
+            }
           },
         );
-      case 1:
-        return ProfileScreen();
       case 2:
         return AddUserScreen();
       default:
+        return _buildAddedUsersList();
+    }
+  }
+
+  Widget _buildAddedUsersList() {
+    String currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserEmail)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text("Error"));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        var userData = snapshot.data!.data() as Map<String, dynamic>;
+        var addedUsers = userData['addedUsers'] as List<dynamic>? ?? [];
+
+        if (addedUsers.isEmpty) {
+          return const Center(child: Text("No users added"));
+        }
+
         return ListView.builder(
-          itemCount: _chatList.length,
+          itemCount: addedUsers.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(_chatList[index]),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
+            return FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(addedUsers[index])
+                  .get(),
+              builder: (context, userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return const ListTile(title: Text("Loading..."));
+                }
+
+                var user = userSnapshot.data!.data() as Map<String, dynamic>;
+                return ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text(user['email'] ?? 'No email'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                          recieverEmail: user['email'],
+                          recieverId: user['uid'],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );
           },
         );
-    }
+      },
+    );
   }
 }
