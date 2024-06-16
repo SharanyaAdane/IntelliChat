@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intelli_ca/Addons/intelliChatUser.dart';
 import 'package:intelli_ca/pages/editProfile.dart';
 import 'package:intelli_ca/pages/login_page.dart';
+import 'package:intl/intl.dart';
 
 class Authentication {
   static SnackBar customSnackBar({required String content}) {
@@ -66,6 +67,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = widget.profileModel.time.toDate();
+    String formattedDateTime =
+        DateFormat(' kk:mm  –  dd/MM/yyyy').format(dateTime);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -83,92 +87,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
               /*ProfileRow(
                   label: 'Last Seen',
                   info:
-                      'Last seen: 2022-05-31'), 
-              ProfileRow(
-                  label: 'Created At',
-                  info:
-                      'Created at: 2022-01-01'), */
-
+                      'Last seen: 2022-05-31'), */
+              ProfileRow(label: 'Created At', info: formattedDateTime),
               const SizedBox(
-                height: 330,
+                height: 250,
               ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        Color.fromARGB(172, 117, 118, 120),
+              Container(
+                height: 40,
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(172, 117, 118, 120),
+                    ),
+                    /*shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      /*shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),*/
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Editprofile(
-                                profileModel: widget.profileModel,
-                              )));
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                      child: Text(
-                        "Edit Profile",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 2,
-                        ),
+                    ),*/
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Editprofile(
+                              profileModel: widget.profileModel,
+                            )));
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    child: Text(
+                      "Edit Profile",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 28,
-                  ),
-                  _isSigningOut
-                      ? const CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        )
-                      : ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                              Color.fromARGB(172, 117, 118, 120),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              _isSigningOut
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : Container(
+                      height: 40,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(172, 117, 118, 120),
+                          ),
+                          /*shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            /*shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),*/
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              _isSigningOut = true;
-                            });
-                            await Authentication.signOut(context: context);
-                            setState(() {
-                              _isSigningOut = false;
-                            });
-                            Navigator.of(context)
-                                .pushReplacement(_routeToSignInScreen());
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                            child: Text(
-                              'Sign Out',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 2,
-                              ),
+                          ),*/
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _isSigningOut = true;
+                          });
+                          await Authentication.signOut(context: context);
+                          setState(() {
+                            _isSigningOut = false;
+                          });
+                          Navigator.of(context)
+                              .pushReplacement(_routeToSignInScreen());
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Text(
+                            'Sign Out',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 2,
                             ),
                           ),
                         ),
-                ],
-              )
+                      ),
+                    ),
             ],
           ),
         ),

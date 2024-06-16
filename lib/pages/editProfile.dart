@@ -33,8 +33,8 @@ class _EditprofileState extends State<Editprofile> {
       String email = _emailcontroller.text;
       String about = _aboutcontroller.text;
 
-      IntelliChatUser updatedUser =
-          IntelliChatUser(name: name, email: email, about: about);
+      IntelliChatUser updatedUser = IntelliChatUser(
+          name: name, email: email, about: about, time: Timestamp.now());
 
       // Save the updated profile to Firestore
       FirebaseFirestore.instance

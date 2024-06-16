@@ -48,7 +48,7 @@ class AddUserScreen extends StatelessWidget {
         trailing: IconButton(
           icon: Icon(Icons.add_circle_outline, size: 30),
           onPressed: () {
-            _addUserToHomepage(userData["uid"]);
+            _addUserToHomepage(userData["email"]);
           },
         ),
       );
@@ -57,14 +57,21 @@ class AddUserScreen extends StatelessWidget {
     }
   }
 
-  void _addUserToHomepage(String userId) async {
+  void _addUserToHomepage(String userEmail) async {
     String currentUserEmail = getCurrentUser()!.email!;
 
-    DocumentReference userDoc =
+    DocumentReference userDoc1 =
         FirebaseFirestore.instance.collection('users').doc(currentUserEmail);
 
-    await userDoc.update({
-      'addedUsers': FieldValue.arrayUnion([userId])
+    await userDoc1.update({
+      'addedUsers': FieldValue.arrayUnion([userEmail])
+    });
+
+    DocumentReference userDoc2 =
+        FirebaseFirestore.instance.collection('users').doc(userEmail);
+
+    await userDoc2.update({
+      'addedUsers': FieldValue.arrayUnion([currentUserEmail])
     });
   }
 }

@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
           name: userDoc['name'],
           email: userDoc['email'],
           about: userDoc['about'],
+          time: userDoc['time'],
         );
       }
     }
@@ -110,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
+        //return Text("Under Maintenance");
         return _buildAddedUsersList();
       case 1:
         return FutureBuilder<IntelliChatUser?>(
@@ -127,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return AddUserScreen();
       default:
+        // return Text("Under Maintenance");
         return _buildAddedUsersList();
     }
   }
@@ -147,11 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-         var userData = snapshot.data!.data() as Map<String, dynamic>?;
-        if (userData == null) {
-          return Center(child: Text("No data available"));
+
+        var userData = snapshot.data!.data() as Map<String, dynamic>?;
+
+        if (userData == null || userData['addedUsers'] == null) {
+          return const Center(child: Text("No users added"));
         }
-        var addedUsers = userData['addedUsers'] as List<dynamic>? ?? [];
+
+        var addedUsers = userData['addedUsers'] as List<dynamic>;
+
 
         if (addedUsers.isEmpty) {
           return const Center(child: Text("No users added"));
@@ -170,7 +177,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const ListTile(title: Text("Loading..."));
                 }
 
-                var user = userSnapshot.data!.data() as Map<String, dynamic>;
+                if (userSnapshot.hasError ||
+                    !userSnapshot.hasData ||
+                    userSnapshot.data == null) {
+                  return const ListTile(title: Text("Error loading user"));
+                }
+
+                var user = userSnapshot.data!.data() as Map<String, dynamic>?;
+                if (user == null) {
+                  return const ListTile(title: Text("Error loading user data"));
+                }
+
                 return ListTile(
                   leading: Icon(Icons.person),
                   title: Text(user['email'] ?? 'No email'),
@@ -180,7 +197,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(
                           recieverEmail: user['email'],
-                          recieverId: user['uid'],
                         ),
                       ),
                     );

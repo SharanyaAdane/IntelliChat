@@ -7,9 +7,12 @@ import 'package:intelli_ca/models/chatservice.dart';
 
 class ChatScreen extends StatefulWidget {
   final String recieverEmail;
-  final String recieverId;
-  ChatScreen(
-      {super.key, required this.recieverEmail, required this.recieverId});
+  //final String recieverId;
+  ChatScreen({
+    super.key,
+    required this.recieverEmail,
+    /* required this.recieverId*/
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -57,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // Create an instance of Chatservice
   void _sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(widget.recieverId,
+      await _chatService.sendMessage(widget.recieverEmail,
           _messageController.text); // Use the instance to call sendMessage
       _messageController.clear();
     }
@@ -101,9 +104,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageList() {
-    String senderID = getCurrentUser()!.uid;
+    String? senderEmail = getCurrentUser()!.email;
     return StreamBuilder(
-        stream: _chatService.getMessages(widget.recieverId, senderID),
+        stream: _chatService.getMessages(widget.recieverEmail, senderEmail),
         builder: (context, snapshot) {
           //errors
           if (snapshot.hasError) {
@@ -129,7 +132,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     //is current user
-    bool isCurrentUser = data["senderID"] == getCurrentUser()!.uid;
+    bool isCurrentUser = data["senderEmail"] == getCurrentUser()!.email;
 
     var alignment =
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;

@@ -18,22 +18,22 @@ class Chatservice {
   }
 
   //send message
-  Future<void> sendMessage(String recieverId, message) async {
+  Future<void> sendMessage(String recieverEmail, message) async {
     // get current user info
-    final String currentUserID = _auth.currentUser!.uid;
+    //final String currentUserID = _auth.currentUser!.email;
     final String currentUserEmail = _auth.currentUser!.email!;
     final Timestamp timestamp = Timestamp.now();
 
     Message newMessage = Message(
-        senderID: currentUserID,
+        //senderID: currentUserID,
         senderEmail: currentUserEmail,
-        recieverID: recieverId,
+        recieverEmail: recieverEmail,
         message: message,
         timestamp: timestamp);
 
     //constructing chat room ids for two users (sorted to ensure uniqueness)
 
-    List<String> ids = [currentUserID, recieverId];
+    List<String> ids = [currentUserEmail, recieverEmail];
     ids.sort(); // sort the ids { this ensure the chat room id is same for any two people }
     String chatRoomID = ids.join('_');
 
@@ -47,8 +47,8 @@ class Chatservice {
   }
   //Get messages
 
-  Stream<QuerySnapshot> getMessages(String userID, otheruserID) {
-    List<String> ids = [userID, otheruserID];
+  Stream<QuerySnapshot> getMessages(String userEmail, otheruserEmail) {
+    List<String> ids = [userEmail, otheruserEmail];
     ids.sort();
     String chatRoomID = ids.join('_');
 
