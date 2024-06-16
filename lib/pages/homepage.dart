@@ -147,7 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        var userData = snapshot.data!.data() as Map<String, dynamic>;
+         var userData = snapshot.data!.data() as Map<String, dynamic>?;
+        if (userData == null) {
+          return Center(child: Text("No data available"));
+        }
         var addedUsers = userData['addedUsers'] as List<dynamic>? ?? [];
 
         if (addedUsers.isEmpty) {
