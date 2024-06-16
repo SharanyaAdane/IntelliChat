@@ -23,24 +23,25 @@ class _CreateprofileState extends State<Createprofile> {
 
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        String uid = user.uid;
+        //String uid = user.uid;
         Timestamp createdTime = Timestamp.now();
 
         IntelliChatUser updatedUser = IntelliChatUser(
           name: name,
           email: email,
           about: about,
+          time: createdTime,
         );
 
         // Save the updated profile to Firestore with UID
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(uid)
+            .doc(email)
             .set({
               'name': updatedUser.name,
               'email': updatedUser.email,
               'about': updatedUser.about,
-              'uid': uid, // Add UID to the document
+              //'uid': uid, // Add UID to the document
               'time': createdTime,
             })
             .then((value) => Navigator.of(context).pushAndRemoveUntil(
@@ -58,48 +59,58 @@ class _CreateprofileState extends State<Createprofile> {
         title: const Text("Profile Setup"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Basic Information",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _namecontroller,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: _emailcontroller,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _aboutcontroller,
-              decoration: InputDecoration(labelText: 'About'),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            GestureDetector(
-              onTap: onFormSubmit,
-              child: Container(
-                width: double.infinity,
-                height: 48,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  color: Color.fromARGB(173, 67, 149, 236),
-                ),
-                child: const Text(
-                  'Submit',
-                  textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Basic Information",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _namecontroller,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: _emailcontroller,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: _aboutcontroller,
+                decoration: InputDecoration(labelText: 'About'),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const Text(
+                "  NOTE* give your google Email only in Email column",
+                style: TextStyle(
+                    fontSize: 10, color: Color.fromARGB(255, 239, 63, 63)),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              GestureDetector(
+                onTap: onFormSubmit,
+                child: Container(
+                  width: double.infinity,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    color: Color.fromARGB(173, 67, 149, 236),
+                  ),
+                  child: const Text(
+                    'Submit',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
