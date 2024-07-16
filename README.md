@@ -1,16 +1,48 @@
 # Intelli_chat
 
-A new Flutter project.
+The Intelli_chat App is a Flutter application that leverages Generative AI (Gemini) to generate intelligent responses. It allows users to sign in with Google, chat in both dark and light modes, delete messages, and view user profiles.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- **Generative AI Integration**: Utilizes Generative AI (Gemini) to generate smart replies based on message context.
+  
+- **Google Sign-In**: Users can sign in securely with their Google account.
+  
+- **Dark/Light Mode**: Supports both dark and light mode themes for user interface customization.
+  
+- **Message Deletion**: Allows users to delete messages they've sent.
+  
+- **User Profiles**: Users can view their profiles within the app.
 
-A few resources to get you started if this is your first Flutter project:
+## Technologies Used
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter**: Framework for building cross-platform applications.
+  
+- **Firebase**: Backend service for authentication (Google sign-in) and message storage.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+Include screenshots or GIFs showcasing the app's interface and functionality.
+
+## Installation
+
+1. Clone the repository:
+
+    ```bash
+   git clone https://github.com/your-username/smart-reply-app.git](https://github.com/SharanyaAdane/IntelliChat.git
+
+2.Navigate to the project directory:
+
+    ```bash
+    cd IntelliChat
+
+3.Install dependencies:
+
+    ```bash
+    flutter pub get
+
+4.Run the app:
+
+    ```bash
+    flutter run
+  
