@@ -33,16 +33,13 @@ Include screenshots or GIFs showcasing the app's interface and functionality.
 
 2.Navigate to the project directory:
 
-    ```bash
     cd IntelliChat
 
 3.Install dependencies:
 
-    ```bash
     flutter pub get
 
 4.Run the app:
 
-    ```bash
     flutter run
   
