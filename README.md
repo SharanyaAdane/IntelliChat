@@ -20,10 +20,6 @@ The Intelli_chat App is a Flutter application that leverages Generative AI (Gemi
   
 - **Firebase**: Backend service for authentication (Google sign-in) and message storage.
 
-## Screenshots
-
-Include screenshots or GIFs showcasing the app's interface and functionality.
-
 ## Installation
 
 1. Clone the repository:
