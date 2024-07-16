@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intelli_ca/models/message.dart';
@@ -58,5 +60,46 @@ class Chatservice {
         .collection("messages")
         .orderBy("timestamp", descending: false)
         .snapshots();
+  }
+
+  Future<String> fetchLatestMessage(String userEmail, otheruserEmail) async {
+    List<String> ids = [userEmail, otheruserEmail];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection("chat_rooms")
+          .doc(chatRoomID)
+          .collection('messages')
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first['message'];
+      } else {
+        return '0';
+      }
+    } catch (e) {
+      print('Error fetching latest message: $e');
+      return '0';
+    }
+  }
+
+  //Delete Message
+  Future<void> deleteMessages(String userEmail, otheruserEmail, docID) async {
+    List<String> ids = [userEmail, otheruserEmail];
+    ids.sort();
+    String chatRoomID = ids.join('_');
+
+    await _firestore
+        .collection("chat_rooms")
+        .doc(chatRoomID)
+        .collection("messages")
+        .doc(docID)
+        .delete()
+        .then(
+          (doc) => print("Document deleted"),
+          onError: (e) => print("Error updating document $e"),
+        );
   }
 }

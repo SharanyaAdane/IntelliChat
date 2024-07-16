@@ -24,3 +24,20 @@ class ChatBubble extends StatelessWidget {
     );
   }
 }
+
+class timeBubble extends StatelessWidget {
+  final String time;
+  const timeBubble({super.key, required this.time});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+      child: Text(
+        time,
+        style: TextStyle(
+            color: const Color.fromARGB(255, 122, 121, 121), fontSize: 13.0),
+      ),
+    );
+  }
+}
